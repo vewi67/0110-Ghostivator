@@ -19,8 +19,8 @@ The ZIP is not password-protected. The program does not open it automatically. I
 ## Run it
 
 - Download 0110-Ghostivator.exe from this repository.
-- Keep the assets folder beside the executable so the Ghost Series artwork can be displayed.
-- Run the executable and follow the prompt.
+- The executable contains a built-in copy of the Ghost Series artwork, so it can run on its own. If the assets folder is beside it, the program uses that file instead.
+- Run the executable and follow the prompt. It requests fullscreen console mode where supported by the Windows console host; otherwise it maximizes the window.
 
 Windows may show its usual warning for an executable downloaded from the internet. Only run software you trust.
 
