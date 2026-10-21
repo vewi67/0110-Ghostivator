@@ -84,11 +84,14 @@ try {
 Ghost Series Presents:
 0110 Ghostivator
 '@
-    $artPath = Join-Path $PSScriptRoot 'assets\ghost-series-art.txt'
-    if (Test-Path -LiteralPath $artPath) {
-        $art = Get-Content -LiteralPath $artPath -Raw -Encoding UTF8
-    } else {
-        $art = $embeddedArt
+    # Packaged EXEs may not expose $PSScriptRoot. Only build an external art path
+    # when a real script directory is available; otherwise use the embedded artwork.
+    $art = $embeddedArt
+    if (-not [string]::IsNullOrWhiteSpace($PSScriptRoot)) {
+        $artPath = Join-Path -Path $PSScriptRoot -ChildPath 'assets\ghost-series-art.txt'
+        if (Test-Path -LiteralPath $artPath -PathType Leaf) {
+            $art = Get-Content -LiteralPath $artPath -Raw -Encoding UTF8
+        }
     }
     Write-Host $art -ForegroundColor Cyan
     Write-Host ""
@@ -119,8 +122,14 @@ Ghost Series Presents:
         [void]$binaryBuilder.Append([Convert]::ToString($byte, 2).PadLeft(8, '0'))
     }
     $binaryMessage = $binaryBuilder.ToString()
-    $downloads = Join-Path $env:USERPROFILE 'Downloads'
-    if (-not (Test-Path -LiteralPath $downloads)) {
+    # Resolve Downloads safely even if USERPROFILE is missing in a packaged host.
+    $userProfile = [Environment]::GetFolderPath([Environment+SpecialFolder]::UserProfile)
+    if ([string]::IsNullOrWhiteSpace($userProfile)) { $userProfile = $env:USERPROFILE }
+    if ([string]::IsNullOrWhiteSpace($userProfile)) {
+        throw 'Windows could not determine the current user profile directory.'
+    }
+    $downloads = Join-Path -Path $userProfile -ChildPath 'Downloads'
+    if (-not (Test-Path -LiteralPath $downloads -PathType Container)) {
         New-Item -ItemType Directory -Path $downloads -Force | Out-Null
     }
     $zipPath = Join-Path $downloads 'YourMessageIsHere.zip'
