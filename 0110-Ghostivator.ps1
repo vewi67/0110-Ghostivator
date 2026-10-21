@@ -4,8 +4,16 @@ Add-Type -TypeDefinition @'
 using System;
 using System.Runtime.InteropServices;
 public static class GhostivatorWindow {
+    [StructLayout(LayoutKind.Sequential)]
+    public struct COORD { public short X; public short Y; }
     [DllImport("kernel32.dll")] public static extern IntPtr GetConsoleWindow();
     [DllImport("user32.dll")] public static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+    [DllImport("kernel32.dll")] private static extern IntPtr GetStdHandle(int nStdHandle);
+    [DllImport("kernel32.dll", SetLastError = true)] private static extern bool SetConsoleDisplayMode(IntPtr hConsoleOutput, uint dwFlags, out COORD lpNewScreenBufferDimensions);
+    public static bool TryFullscreen() {
+        COORD dimensions;
+        return SetConsoleDisplayMode(GetStdHandle(-11), 1, out dimensions);
+    }
 }
 '@
 function Show-GhostivatorError {
@@ -21,7 +29,11 @@ function Show-GhostivatorError {
 try {
     try {
         $window = [GhostivatorWindow]::GetConsoleWindow()
-        if ($window -ne [IntPtr]::Zero) { [void][GhostivatorWindow]::ShowWindow($window, 3) }
+        if ($window -ne [IntPtr]::Zero) {
+            [void][GhostivatorWindow]::ShowWindow($window, 3)
+            # Request true console fullscreen where the Windows host supports it.
+            [void][GhostivatorWindow]::TryFullscreen()
+        }
     } catch {}
     $Host.UI.RawUI.WindowTitle = '0110 Ghostivator | Ghost Series'
     try { Clear-Host } catch {}
