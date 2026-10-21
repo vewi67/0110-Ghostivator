@@ -55,4 +55,4 @@ Distributed under the **Ghost Series Custom License 1.0**. See [LICENSE](LICENSE
 
 ## Ghost Series
 
-0110 Ghostivator is part of the **Ghost Series**: small, intentionally odd programs that do one thing and get out of the way.
+0110 Ghostivator is part of the **Ghost Series**, a collection of small, intentionally odd programs built around one simple idea taken to an absurd extreme. Each entry is a standalone program with its own purpose and personality. Ghostivator turns a simple motivational message into an unnecessarily elaborate binary-and-ZIP ritual.
