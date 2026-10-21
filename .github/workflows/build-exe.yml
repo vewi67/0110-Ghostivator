@@ -1,4 +1,5 @@
 name: Build 0110 Ghostivator
+# Rebuild trigger: regenerate the executable whenever this workflow changes.
 
 on:
   push:
