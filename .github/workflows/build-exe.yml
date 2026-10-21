@@ -40,5 +40,6 @@ jobs:
             Write-Host "Executable is already up to date."
           } else {
             git commit -m "Build 0110 Ghostivator executable"
+            git pull --rebase origin main
             git push
           }
